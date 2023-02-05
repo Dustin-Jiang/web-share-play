@@ -1,0 +1,15 @@
+.backdrop {
+  background: #fafafa;
+  height: 100vh;
+
+  flex-grow: 1;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height : 100vh;
+
+  position: relative;
+}
