@@ -6,7 +6,8 @@ import styles from "./home.module.css";
 import Background from "../../components/background/background";
 import IconTitle from "../../components/home/iconTitle/iconTitle";
 
-import {buttonSubmit, loading, userNameChange, userNameError} from "../../viewmodel/home/home"
+import { buttonSubmit, loading, userNameChange, userNameError } from "../../viewmodel/home/home"
+import { getUserInfo } from "../../model/userInfo";
 
 const Home: Component = () => {
   return (
@@ -19,13 +20,14 @@ const Home: Component = () => {
           </IconTitle>
 
           <Box
-            sx={{margin: "8px 0"}}>
+            sx={{ margin: "8px 0" }}>
             <TextField
               label="你的名字"
               id="userName"
               variant="standard"
               fullWidth
               required
+              value={getUserInfo().name || ""}
               error={userNameError()}
               onChange={userNameChange}
               helperText={userNameError() && "必须输入用户名"}
@@ -34,8 +36,8 @@ const Home: Component = () => {
           <Button variant="contained" sx={{
             margin: "8px 0"
           }}
-          onClick={buttonSubmit}
-          disabled={loading()}
+            onClick={buttonSubmit}
+            disabled={loading()}
           >开始</Button>
         </Paper>
       </Background>
