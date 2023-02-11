@@ -1,4 +1,3 @@
-import { useNavigate } from "@solidjs/router";
 import { ChangeEvent, ChangeEventHandler } from "@suid/types";
 import { createSignal } from "solid-js";
 import { getSession, setSesion } from "../../model/session";
@@ -8,7 +7,6 @@ import getRandomPhrase from "../../utils/randomPhrase";
 let [userName, setUserName] = createSignal<string>(getUserInfo().name || "");
 let [userNameError, setUserNameError] = createSignal<boolean>(false)
 let [loading, setLoading] = createSignal<boolean>(false)
-let navigate = useNavigate()
 
 let userNameChange : ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement, string>
   = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, value: string) => {
@@ -27,9 +25,17 @@ let buttonSubmit = (event: MouseEvent) => {
     let sessionName = getRandomPhrase()
     setSesion({...getSession(), sessionName})
 
-    setUserInfo({...getUserInfo(), name})
+    let oldUserInfo = getUserInfo()
+    setUserInfo({
+      ...oldUserInfo,
+      name,
+      create: [
+        ...oldUserInfo.create,
+        sessionName
+      ]
+    })
 
-    navigate(sessionName)
+    window.location.pathname = `/${sessionName}`
   }
 }
 
@@ -37,5 +43,6 @@ export {
   userNameChange,
   userNameError,
   buttonSubmit,
-  loading
+  loading,
+  userName
 }

@@ -6,8 +6,7 @@ import styles from "./home.module.css";
 import Background from "../../components/background/background";
 import IconTitle from "../../components/home/iconTitle/iconTitle";
 
-import { buttonSubmit, loading, userNameChange, userNameError } from "../../viewmodel/home/home"
-import { getUserInfo } from "../../model/userInfo";
+import { buttonSubmit, loading, userNameChange, userNameError, userName } from "../../viewmodel/home/home"
 
 const Home: Component = () => {
   return (
@@ -27,7 +26,7 @@ const Home: Component = () => {
               variant="standard"
               fullWidth
               required
-              value={getUserInfo().name || ""}
+              value={userName()}
               error={userNameError()}
               onChange={userNameChange}
               helperText={userNameError() && "必须输入用户名"}

@@ -1,9 +1,10 @@
 interface UserInfo {
-  name: string
+  name: string,
+  create: string[]
 }
 
-function getUserInfo() : UserInfo {
-  return JSON.parse(localStorage.getItem("userInfo") || "{}")
+function getUserInfo(): UserInfo {
+  return JSON.parse(localStorage.getItem("userInfo") || `{ "name": "", "create": [] }`)
 }
 
 function setUserInfo(value: UserInfo) {
@@ -13,6 +14,7 @@ function setUserInfo(value: UserInfo) {
 export type {
   UserInfo
 }
+
 export {
   getUserInfo,
   setUserInfo
