@@ -9,17 +9,18 @@ import Player from "../../components/play/player/player";
 import UserList from "../../components/play/userList/userList";
 import UserNameDialog from "../../components/play/userNameDialog";
 import { getSession, setSesion } from "../../model/session";
+import getTrackers from "../../utils/trackers";
 import { copyLink, Play as PlayViewModel } from "../../viewmodel/play";
 
 const Play: Component = () => {
   const sessionName = useParams().sessionName;
   let play: PlayViewModel
   
-  onMount(() => {
+  onMount(async () => {
     if (sessionName !== getSession().sessionName) {
       setSesion({...getSession(), sessionName})
     }
-    play = new PlayViewModel(sessionName);
+    play = new PlayViewModel(sessionName, await getTrackers());
   })
 
   onCleanup(() => {

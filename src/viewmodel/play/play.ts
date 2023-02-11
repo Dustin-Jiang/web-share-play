@@ -1,6 +1,6 @@
 import { createSignal } from "solid-js";
 import Connection from "../../model/connecion";
-import { play, setPlay } from "../../model/play";
+import { setPlay } from "../../model/play";
 import { getUserInfo } from "../../model/userInfo";
 
 const copyLink = () => {
@@ -19,8 +19,10 @@ const toggleDrawer = () => {
 class Play {
   private connection: Connection;
 
-  constructor(roomId: string) {
-    this.connection = new Connection(roomId);
+  // FIXME: the async function `getTrackers` shouldn't be run at top layer
+  //        but it seems that there is no better solution at present. 
+  constructor(roomId: string, trackerUrls: string[]) {
+    this.connection = new Connection(roomId, trackerUrls);
     this.leave = this.connection.leave;
 
     console.log(this.connection.getPeers())

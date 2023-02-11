@@ -5,9 +5,10 @@ export default class Connection {
   private room: Room;
 
   // TODO: this implement is silly
-  constructor(roomId: string) {
+  constructor(roomId: string, trackerUrls: string[]) {
     this.room = joinRoom({
-      appId: "https://github.com/Dustin-Jiang/web-share-play"
+      appId: "https://github.com/Dustin-Jiang/web-share-play",
+      trackerUrls
     }, roomId);
     this.leave = this.room.leave
     this.onPeerJoin = this.room.onPeerJoin;
