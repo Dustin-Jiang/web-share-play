@@ -1,7 +1,7 @@
 import { useParams } from "@solidjs/router";
 import { Link } from "@suid/icons-material";
 import { IconButton } from "@suid/material";
-import { Component, onCleanup, onMount } from "solid-js";
+import { Component, createEffect, onCleanup, onMount } from "solid-js";
 import Background from "../../components/background/background";
 import MainAppBar from "../../components/mainAppBar/mainAppBar";
 import MainDrawer from "../../components/mainDrawer/mainDrawer";
@@ -9,6 +9,7 @@ import Player from "../../components/play/player/player";
 import UserList from "../../components/play/userList/userList";
 import UserNameDialog from "../../components/play/userNameDialog";
 import { getSession, setSesion } from "../../model/session";
+import { getUserInfo } from "../../model/userInfo";
 import getTrackers from "../../utils/trackers";
 import { copyLink, Play as PlayViewModel } from "../../viewmodel/play";
 
@@ -20,7 +21,14 @@ const Play: Component = () => {
     if (sessionName !== getSession().sessionName) {
       setSesion({...getSession(), sessionName})
     }
-    play = new PlayViewModel(sessionName, await getTrackers());
+    if (getUserInfo().name !== "") play = new PlayViewModel(sessionName, await getTrackers());
+    else {
+      createEffect(async () => {
+        // FIXME: a silly binding to `UserInfo` function
+        console.log(getUserInfo().name)
+        play = new PlayViewModel(sessionName, await getTrackers());
+      })
+    }
   })
 
   onCleanup(() => {

@@ -19,3 +19,7 @@ export {
   play,
   setPlay
 }
+
+export type {
+  User
+}

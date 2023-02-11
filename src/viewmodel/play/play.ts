@@ -1,6 +1,7 @@
 import { createSignal } from "solid-js";
 import Connection from "../../model/connecion";
-import { setPlay } from "../../model/play";
+import { setPlay, User } from "../../model/play";
+import { getSession } from "../../model/session";
 import { getUserInfo } from "../../model/userInfo";
 
 const copyLink = () => {
@@ -25,13 +26,34 @@ class Play {
     this.connection = new Connection(roomId, trackerUrls);
     this.leave = this.connection.leave;
 
-    console.log(this.connection.getPeers())
-    setPlay("user", user => ({...user, "self": {
+    const currentUser = {
       name: getUserInfo().name,
-      isOwner: true
-    }}))
+      isOwner: getUserInfo().create.includes(getSession().sessionName)
+    }
 
-    this.connection.onPeerJoin((peerId) => console.log(peerId));
+    console.log(this.connection.getPeers())
+    setPlay("user", user => ({
+      ...user, "self": currentUser
+    }))
+
+    const [sendIntroduce, getIntroduce] = this.connection.makeAction<User>("introduce")
+
+    sendIntroduce(currentUser)
+    getIntroduce((data, peerId) => {
+      setPlay("user", peerId, data)
+    })
+
+    this.connection.onPeerJoin((peerId) => {
+      console.log(`${peerId} joined`)
+      sendIntroduce(currentUser, peerId)
+    });
+
+    this.connection.onPeerLeave((peerId) => {
+      console.log(`${peerId} left`)
+      //@ts-ignore
+      // Solid requires setting value of `undefined` to delete a key
+      setPlay("user", peerId, undefined)
+    })
   }
 
   leave;

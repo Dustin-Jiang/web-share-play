@@ -76,7 +76,7 @@ const Player: Component<{
               artist={props.songInfo?.artist}
               album={props.songInfo?.album}
             />
-            <Cover src="http://p2.music.126.net/S4Kcgr9CmA_1yM6wbjL3Rg==/109951165354140879.jpg?param=2000y2000" />
+            <Cover src="https://p2.music.126.net/S4Kcgr9CmA_1yM6wbjL3Rg==/109951165354140879.jpg?param=2000y2000" />
           </Box>
         </CardContent>
         <PlayControl/ >
