@@ -1,9 +1,13 @@
 interface Session {
-  sessionName: string
+  sessionName: string,
+  create: string[]
 }
 
 function getSession(): Session {
-  return JSON.parse(sessionStorage.getItem("session") || "{}")
+  let session = sessionStorage.getItem("session")
+  if (session)
+    return JSON.parse(session)
+  else return {sessionName: "", create: [] }
 }
 
 function setSesion(session: Session) {

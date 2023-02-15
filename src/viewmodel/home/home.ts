@@ -23,16 +23,17 @@ let buttonSubmit = (event: MouseEvent) => {
     setLoading(true)
 
     let sessionName = getRandomPhrase()
-    setSesion({...getSession(), sessionName})
 
-    let oldUserInfo = getUserInfo()
-    setUserInfo({
-      ...oldUserInfo,
-      name,
+    let oldSession = getSession()
+    setSesion({...getSession(), sessionName,
       create: [
-        ...oldUserInfo.create,
+        ...oldSession.create,
         sessionName
-      ]
+      ]})
+
+    setUserInfo({
+      ...getUserInfo(),
+      name
     })
 
     window.location.pathname = `/${sessionName}`
