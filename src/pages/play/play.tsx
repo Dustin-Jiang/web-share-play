@@ -1,34 +1,36 @@
 import { useParams } from "@solidjs/router";
 import { Link } from "@suid/icons-material";
 import { IconButton } from "@suid/material";
-import { Component, createEffect, onCleanup, onMount } from "solid-js";
+import { Component, createSignal, onCleanup, onMount } from "solid-js";
 import Background from "../../components/background/background";
 import MainAppBar from "../../components/mainAppBar/mainAppBar";
 import MainDrawer from "../../components/mainDrawer/mainDrawer";
 import Player from "../../components/play/player/player";
 import UserList from "../../components/play/userList/userList";
 import UserNameDialog from "../../components/play/userNameDialog";
+import { onUserNameSet } from "../../viewmodel/play/userNameDialog"
 import { getSession, setSesion } from "../../model/session";
-import { getUserInfo } from "../../model/userInfo";
 import getTrackers from "../../utils/trackers";
 import { copyLink, Play as PlayViewModel } from "../../viewmodel/play";
 
 const Play: Component = () => {
   const sessionName = useParams().sessionName;
+  const [userNameSet, setUserNameSet] = createSignal<boolean>(false)
   let play: PlayViewModel
   
   onMount(async () => {
     if (sessionName !== getSession().sessionName) {
       setSesion({...getSession(), sessionName})
     }
-    if (getUserInfo().name !== "") play = new PlayViewModel(sessionName, await getTrackers());
-    else {
-      createEffect(async () => {
-        // FIXME: a silly binding to `UserInfo` function
-        console.log(getUserInfo().name)
-        play = new PlayViewModel(sessionName, await getTrackers());
-      })
-    }
+
+    onUserNameSet().then(async () => {
+      play = new PlayViewModel(sessionName, await getTrackers());
+      setUserNameSet(true)
+    })
+
+    window.addEventListener("unload", () => {
+      play.leave()
+    })
   })
 
   onCleanup(() => {
@@ -37,7 +39,7 @@ const Play: Component = () => {
 
   return (
     <>
-      <UserNameDialog />
+      <UserNameDialog/>
       <MainAppBar>
         {getSession().sessionName || sessionName}
         <IconButton
@@ -50,7 +52,7 @@ const Play: Component = () => {
       
       <div style={{display: "flex"}}>
         <MainDrawer>
-          <UserList />
+          <UserList show={userNameSet()}/>
         </MainDrawer>
         <Background>
           <Player

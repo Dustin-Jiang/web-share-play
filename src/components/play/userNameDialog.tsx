@@ -33,4 +33,4 @@ const UserNameDialog: Component = () => {
 }
 
 export default UserNameDialog
-export { setHasUserName }
+export { hasUserName, setHasUserName }

@@ -1,9 +1,9 @@
-import { createSignal } from "solid-js"
+import { createEffect, createSignal } from "solid-js"
 import type { ChangeEventHandler, ChangeEvent } from "@suid/types"
 import { getUserInfo, setUserInfo } from "../../model/userInfo"
-import { setHasUserName } from "../../components/play/userNameDialog"
+import { hasUserName, setHasUserName } from "../../components/play/userNameDialog"
 
-const [userName, setUserName] = createSignal<string>("")
+const [userName, setUserName] = createSignal<string>(getUserInfo().name)
 const [valueError, setValueError] = createSignal<boolean>(false)
 
 const handleValueChange : ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement, string>
@@ -20,8 +20,19 @@ const handleSubmit = (event: MouseEvent) => {
   }
 }
 
+const onUserNameSet: () => Promise<string> = () => {
+  return new Promise((resolve, reject) => {
+    createEffect(() => {
+      if (hasUserName()) {
+        resolve(userName())
+      }
+    })
+  })
+}
+
 export {
   handleValueChange,
   handleSubmit,
-  valueError
+  valueError,
+  onUserNameSet
 }
