@@ -22,7 +22,7 @@ async function checkTrackers(): Promise<string[]> {
   let cache = localStorage.getItem("trackers")
   let trackers: string[]
   let needUpdate = false
-  if (cache === null) {
+  if (cache === null || cache === "{}") {
     localStorage.setItem("trackers", "{}")
     cache = "{}"
     trackers = []
@@ -50,6 +50,16 @@ async function checkTrackers(): Promise<string[]> {
 }
 
 async function updateTrackers() {
-  let response = await (await fetch("https://trackerslist.com/best.txt")).text()
-  return response.split("\n\n")
+  let response = await (
+    await fetch(
+      "https://fastly.jsdelivr.net/gh/XIU2/TrackersListCollection/all.txt"
+    )
+  ).text()
+  let rawUrls = response.split("\n\n")
+  let forceConverted: string[] = []
+  rawUrls.map((urlString) => {
+    forceConverted.push(urlString.replace("http", "ws"))
+  })
+
+  return forceConverted
 }
