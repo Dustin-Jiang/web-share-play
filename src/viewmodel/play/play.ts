@@ -4,11 +4,16 @@ import Connection from "../../model/connection/connecion";
 import { setPlay, User } from "../../model/play";
 import { getSession } from "../../model/session";
 import { getUserInfo } from "../../model/userInfo";
+import { displayCopyLinkToaster, displayCopyLinkFailToaster } from "./notification";
 
 const copyLink = () => {
   navigator.clipboard.writeText(window.location.href).then(
-    () => {},
-    () => {}
+    () => {
+      displayCopyLinkToaster()
+    },
+    () => {
+      displayCopyLinkFailToaster()
+    }
   );
 };
 

@@ -12,6 +12,7 @@ import { onUserNameSet } from "../../viewmodel/play/userNameDialog"
 import { getSession, setSesion } from "../../model/session";
 import getTrackers from "../../utils/trackers";
 import { copyLink, Play as PlayViewModel } from "../../viewmodel/play";
+import { Toaster } from "solid-toast";
 
 const Play: Component = () => {
   const sessionName = useParams().sessionName;
@@ -39,6 +40,7 @@ const Play: Component = () => {
 
   return (
     <>
+      <Toaster />
       <UserNameDialog/>
       <MainAppBar>
         {getSession().sessionName || sessionName}
