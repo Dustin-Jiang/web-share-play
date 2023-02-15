@@ -1,5 +1,6 @@
 import { createSignal } from "solid-js";
-import Connection from "../../model/connecion";
+import { UserDataExchange } from "../../model/connection";
+import Connection from "../../model/connection/connecion";
 import { setPlay, User } from "../../model/play";
 import { getSession } from "../../model/session";
 import { getUserInfo } from "../../model/userInfo";
@@ -28,7 +29,7 @@ class Play {
 
     const currentUser = {
       name: getUserInfo().name,
-      isOwner: getUserInfo().create.includes(getSession().sessionName)
+      isOwner: getSession().create.includes(getSession().sessionName)
     }
 
     console.log(this.connection.getPeers())
@@ -36,7 +37,21 @@ class Play {
       ...user, "self": currentUser
     }))
 
-    const [sendIntroduce, getIntroduce] = this.connection.makeAction<User>("introduce")
+    const [
+      sendIntroduce,
+      getIntroduce
+    ] = this.connection.makeAction<User>("introduce")
+    const [
+      sendUserDataExchange,
+      getUserDataExchange
+    ] = this.connection.makeAction<UserDataExchange.DataPack>("userExchange")
+
+    const userDataExchange = new UserDataExchange.Exchange(
+      sendUserDataExchange,
+      getUserDataExchange
+    )
+
+    setInterval(() => userDataExchange.send(), 10000)
 
     sendIntroduce(currentUser)
     getIntroduce((data, peerId) => {
