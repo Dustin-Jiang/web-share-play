@@ -1,6 +1,6 @@
 import { useParams } from "@solidjs/router";
 import { Link } from "@suid/icons-material";
-import { IconButton } from "@suid/material";
+import { Button, IconButton } from "@suid/material";
 import { Component, createSignal, onCleanup, onMount } from "solid-js";
 import Background from "../../components/background/background";
 import MainAppBar from "../../components/mainAppBar/mainAppBar";
@@ -11,7 +11,7 @@ import UserNameDialog from "../../components/play/userNameDialog";
 import { onUserNameSet } from "../../viewmodel/play/userNameDialog"
 import { getSession, setSesion } from "../../model/session";
 import getTrackers from "../../utils/trackers";
-import { copyLink, Play as PlayViewModel } from "../../viewmodel/play";
+import { copyLink, Play as PlayViewModel, quitPlay } from "../../viewmodel/play";
 import { Toaster } from "solid-toast";
 
 const Play: Component = () => {
@@ -42,7 +42,15 @@ const Play: Component = () => {
     <>
       <Toaster />
       <UserNameDialog/>
-      <MainAppBar>
+      <MainAppBar rightSide={
+        <Button
+          color="inherit"
+          sx={{fontWeight: "700"}}
+          onClick={quitPlay}
+        >
+          离开
+        </Button>
+      }>
         {getSession().sessionName || sessionName}
         <IconButton
           sx={{ marginLeft: "8px", color: "inherit" }}

@@ -1,9 +1,11 @@
-import { AppBar, Typography, IconButton, Box, Toolbar, Button } from "@suid/material";
-import { children, ParentComponent } from "solid-js";
+import { AppBar, Typography, IconButton, Box, Toolbar } from "@suid/material";
+import { children, JSX, ParentComponent } from "solid-js";
 import MenuIcon from "@suid/icons-material/Menu";
 import { toggleDrawer } from "../../viewmodel/play";
 
-const MainAppBar: ParentComponent = (props) => {
+const MainAppBar: ParentComponent<{
+  rightSide?: JSX.Element
+}> = (props) => {
   let title = children(() => props.children)
 
   return (
@@ -27,6 +29,7 @@ const MainAppBar: ParentComponent = (props) => {
           >
             {title()}
           </Typography>
+          {props.rightSide}
         </Toolbar>
       </AppBar>
     </Box>
