@@ -7,16 +7,22 @@ export namespace UserDataExchange {
   export interface DataPack {
     sender: User
     timeStamp: number,
-    knownUser: Map<string, User>
+    knownUser: [string, User][]
   }
 
   export class Exchange {
     sender: ActionSender<DataPack>
     receiver: ActionReceiver<DataPack>
+    selfId: string
 
-    constructor(sender: ActionSender<DataPack>, receiver: ActionReceiver<DataPack>) {
+    constructor(
+      sender: ActionSender<DataPack>, 
+      receiver: ActionReceiver<DataPack>,
+      selfId: string
+    ) {
       this.sender = sender
       this.receiver = receiver
+      this.selfId = selfId
 
       this.receiver(this.get)
     }
@@ -28,7 +34,7 @@ export namespace UserDataExchange {
           isOwner: getSession().create.includes(getSession().sessionName)
         },
         timeStamp: Date.now(),
-        knownUser: new Map(Object.entries(play.user))
+        knownUser: Object.entries(play.user)
       })
     }
 
@@ -37,7 +43,9 @@ export namespace UserDataExchange {
       let hasNew = false
       let hasDiff = false
   
-      data.knownUser.forEach((user, key) => {
+      let receiveKnownUser = new Map(data.knownUser)
+      
+      receiveKnownUser.forEach((user, key) => {
         if (!usersBeforeExchange.has(key)) {
           hasNew = true
           setPlay("user", key, user)
@@ -45,7 +53,7 @@ export namespace UserDataExchange {
       })
 
       usersBeforeExchange.forEach((user, key) => {
-        if (!data.knownUser.has(key)) {
+        if (!receiveKnownUser.has(key)) {
           hasDiff = true
         }
       });
@@ -66,9 +74,9 @@ export namespace UserDataExchange {
 
     private createDataPack(): DataPack {
       return {
-        sender: play.user["self"],
+        sender: play.user[this.selfId],
         timeStamp: Date.now(),
-        knownUser: new Map(Object.entries(play.user))
+        knownUser: Object.entries(play.user)
       }
     }
   }
