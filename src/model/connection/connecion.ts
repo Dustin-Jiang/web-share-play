@@ -1,8 +1,9 @@
-import { joinRoom } from "trystero";
+import { joinRoom, selfId } from "trystero";
 import type { Room } from "trystero";
 
 export default class Connection {
   private room: Room;
+  selfId: string
 
   // TODO: this implement is silly
   constructor(roomId: string, trackerUrls: string[]) {
@@ -11,6 +12,7 @@ export default class Connection {
       trackerUrls
     }, roomId);
     this.leave = this.room.leave
+    this.selfId = selfId
     this.onPeerJoin = this.room.onPeerJoin;
     this.onPeerLeave = this.room.onPeerLeave;
     this.onPeerStream = this.room.onPeerStream;
