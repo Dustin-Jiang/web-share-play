@@ -1,10 +1,12 @@
-import { createSignal } from "solid-js";
+import { createEffect, createSignal } from "solid-js";
 
 let timer: NodeJS.Timer;
 
-interface NowPlay {
+export interface NowPlay {
   isPlaying: boolean;
-  song: {
+  media: {
+    type: "music";
+    src: string;
     name?: string;
     artist?: string;
     album?: string;
@@ -15,7 +17,9 @@ interface NowPlay {
 
 const [nowPlay, setNowPlay] = createSignal<NowPlay>({
   isPlaying: false,
-  song: {
+  media: {
+    type: "music",
+    src: "",
     name: "Choeur: Jésus demeure ma joie, Consolation et sève de mon coeur",
     artist: "Various",
     album: "Neon Genesis Evangelion",
@@ -32,6 +36,10 @@ const togglePlaying = () => {
   });
 
   console.log(nowPlay())
+};
+
+createEffect<boolean>((prev) => {
+  if (nowPlay().isPlaying === prev) return prev
   if (nowPlay().isPlaying) {
     timer = setInterval(() => {
       setNowPlay({
@@ -42,10 +50,38 @@ const togglePlaying = () => {
   } else {
     clearInterval(timer)
   }
-};
+
+  return nowPlay().isPlaying
+})
+
+/**
+ * 
+ * @param playing target playing status
+ * @returns if status changed
+ */
+const setPlaying = (playing: boolean) : boolean => {
+  if (playing === nowPlay().isPlaying) return false
+  else {
+    setNowPlay({
+      ...nowPlay(),
+      isPlaying: playing
+    })
+
+    return true
+  }
+}
+
+const [isPlaylistOpen, setPlaylistOpen] = createSignal<boolean>(false)
+
+const togglePlaylistOpen = () => {
+  setPlaylistOpen(!isPlaylistOpen())
+}
 
 export {
   nowPlay,
   setNowPlay,
-  togglePlaying
+  togglePlaying,
+  setPlaying,
+  togglePlaylistOpen,
+  isPlaylistOpen
 };

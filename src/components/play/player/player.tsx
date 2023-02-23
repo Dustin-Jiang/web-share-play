@@ -4,6 +4,7 @@ import { Component, Show } from "solid-js";
 import { mergeProps } from "solid-js";
 import PlayControl from "./playControl";
 import styles from "./player.module.css";
+import Playlist from "./playList";
 
 const Cover: Component<{ src?: string }> = (props) => {
   return (
@@ -81,6 +82,7 @@ const Player: Component<{
         </CardContent>
         <PlayControl/ >
       </Card>
+      <Playlist />
     </>
   );
 };

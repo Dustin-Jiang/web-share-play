@@ -1,10 +1,11 @@
-import { createSignal } from "solid-js";
-import { UserDataExchange } from "../../model/connection";
+import { createEffect, createSignal } from "solid-js";
+import { MediaAction, UserDataExchange } from "../../model/connection";
 import Connection from "../../model/connection/connecion";
 import { setPlay, User } from "../../model/play";
 import { getSession } from "../../model/session";
 import { getUserInfo } from "../../model/userInfo";
 import { displayCopyLinkToaster, displayCopyLinkFailToaster } from "./notification";
+import { NowPlay, nowPlay } from "./player";
 
 const copyLink = () => {
   navigator.clipboard.writeText(window.location.href).then(
@@ -16,6 +17,10 @@ const copyLink = () => {
     }
   );
 };
+
+const quitPlay = () => {
+  window.location.href = "/"
+}
 
 const [drawer, setDrawer] = createSignal<boolean>(true);
 
@@ -38,9 +43,8 @@ class Play {
     }
 
     console.log(this.connection.getPeers())
-    setPlay("user", user => ({
-      ...user, "self": currentUser
-    }))
+    console.log(this.connection.selfId)
+    setPlay("user", this.connection.selfId, currentUser)
 
     const [
       sendIntroduce,
@@ -53,8 +57,30 @@ class Play {
 
     const userDataExchange = new UserDataExchange.Exchange(
       sendUserDataExchange,
-      getUserDataExchange
+      getUserDataExchange,
+      this.connection.selfId
     )
+
+    const [
+      sendMediaAction,
+      getMediaAction
+    ] = this.connection.makeAction<
+      MediaAction.MediaAction<MediaAction.Actions>
+    >("mediaAction")
+
+    const mediaAction = new MediaAction.Action(
+      sendMediaAction,
+      getMediaAction
+    )
+    
+    // track media playing and broadcast
+    createEffect<NowPlay>((prev) => {
+      let actionType = nowPlay().media.type
+      mediaAction.createAction<typeof actionType>(nowPlay(), prev).forEach((action) => {
+        mediaAction.send(action)
+      })
+      return nowPlay()
+    })
 
     setInterval(() => userDataExchange.send(), 10000)
 
@@ -79,4 +105,4 @@ class Play {
   leave;
 }
 
-export { copyLink, drawer, toggleDrawer, Play };
+export { copyLink, drawer, toggleDrawer, Play, quitPlay };
