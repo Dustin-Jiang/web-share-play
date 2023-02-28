@@ -1,4 +1,6 @@
 import { createEffect, createSignal } from "solid-js";
+import { audioElement } from "../../../components";
+import { Music, play } from "../../../model";
 
 let timer: NodeJS.Timer;
 
@@ -10,9 +12,9 @@ export interface NowPlay {
     name?: string;
     artist?: string;
     album?: string;
-    length?: number;
+    albumCover?: string;
+    length: number; // in milliseconds
   };
-  percentage: number;
 }
 
 const [nowPlay, setNowPlay] = createSignal<NowPlay>({
@@ -20,38 +22,60 @@ const [nowPlay, setNowPlay] = createSignal<NowPlay>({
   media: {
     type: "music",
     src: "",
-    name: "Choeur: Jésus demeure ma joie, Consolation et sève de mon coeur",
-    artist: "Various",
-    album: "Neon Genesis Evangelion",
-    length: 300
-  },
-  percentage: 0,
+    name: "",
+    artist: "",
+    album: "",
+    albumCover: "",
+    length: 0
+  }
 });
 
-const togglePlaying = () => {
-  let status = nowPlay();
-  setNowPlay({
-    ...status,
-    isPlaying: !status.isPlaying,
-  });
+const [playingPercentage, setPlayingPercentage] = createSignal<number>(0)
 
-  console.log(nowPlay())
+const togglePlaying = () => {
+  setPlaying(!nowPlay().isPlaying)
 };
 
+// listen to currentTime change
 createEffect<boolean>((prev) => {
   if (nowPlay().isPlaying === prev) return prev
   if (nowPlay().isPlaying) {
-    timer = setInterval(() => {
-      setNowPlay({
-        ...nowPlay(),
-        percentage: nowPlay().percentage += 1
-      })
-    }, 1000)
+    timer = setInterval(
+      () => setPlayingPercentage(
+        audioElement.currentTime / audioElement.duration * 100
+      ),
+      50)
   } else {
     clearInterval(timer)
   }
-
   return nowPlay().isPlaying
+})
+
+// on the end of media
+createEffect(() => {
+  if (playingPercentage() === 100) {
+    let foundNowPlaying = false
+
+    // stop the media first
+    setPlaying(false)
+    for (let media of play.media) {
+      if (foundNowPlaying) {
+        // last song is previous Media<> object
+        // this is the next
+        setSong(media.data)
+  
+        setPlayingPercentage(0)
+
+        // everything is done, now start playing
+        // if there is no media next, the code won't reach here
+        // so play the audioElement wildly
+        setTimeout(() => setPlaying(true), 50)
+
+        break
+      }
+      if (nowPlay().media.src === media.data.src) foundNowPlaying = true
+    }
+  }
 })
 
 /**
@@ -65,10 +89,37 @@ const setPlaying = (playing: boolean) : boolean => {
     setNowPlay({
       ...nowPlay(),
       isPlaying: playing
-    })
+    });
+
+    (playing) ? audioElement.play() : audioElement.pause()
 
     return true
   }
+}
+
+const setSong = (song: Music) => {
+  setNowPlay({
+    ...nowPlay(),
+    media: {
+      type: "music",
+      src: song.src,
+      name: song.title,
+      artist: song.artist,
+      album: song.album,
+      albumCover: song.albumCover,
+      length: song.length
+    }
+  })
+
+  navigator.mediaSession.metadata = new MediaMetadata({
+    album: song.album || "未知专辑",
+    artist: song.artist || "未知艺术家",
+    artwork: [{ src: song.albumCover || "" }],
+    title: song.title
+  })
+
+  navigator.mediaSession.setActionHandler("play", () => setPlaying(true))
+  navigator.mediaSession.setActionHandler("pause", () => setPlaying(false))
 }
 
 const [isPlaylistOpen, setPlaylistOpen] = createSignal<boolean>(false)
@@ -77,11 +128,23 @@ const togglePlaylistOpen = () => {
   setPlaylistOpen(!isPlaylistOpen())
 }
 
+const [mediaSrc, setMediaSrc] = createSignal<string>("")
+createEffect<string>((prev) => {
+  if (nowPlay().media.src === prev) return prev
+  else {
+    setMediaSrc(nowPlay().media.src)
+    return nowPlay().media.src
+  }
+})
+
 export {
   nowPlay,
   setNowPlay,
   togglePlaying,
   setPlaying,
   togglePlaylistOpen,
-  isPlaylistOpen
+  isPlaylistOpen,
+  playingPercentage,
+  mediaSrc,
+  setSong
 };

@@ -1,7 +1,7 @@
 import { MusicNote, Pause, SkipNext, SkipPrevious } from "@suid/icons-material";
 import { Box, Card, CardContent, IconButton, Typography } from "@suid/material";
 import { Component, Show } from "solid-js";
-import { mergeProps } from "solid-js";
+import { mediaSrc, nowPlay } from "../../../viewmodel";
 import PlayControl from "./playControl";
 import styles from "./player.module.css";
 import Playlist from "./playList";
@@ -30,42 +30,30 @@ const SongInfo: Component<{
   artist?: string;
   album?: string;
 }> = (props) => {
-  const mergedProps: {
-    name: string;
-    artist: string;
-    album: string;
-  } = mergeProps(
-    { name: "未知歌曲", artist: "未知艺术家", album: "未知专辑" },
-    props
-  ) as {
-    name: string;
-    artist: string;
-    album: string;
-  };
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
-        <Typography variant="h4">{mergedProps.name}</Typography>
+        <Typography variant="h4">{props.name || "未知歌曲"}</Typography>
         <Typography
           variant="caption"
           sx={{ display: "block" }}
         >
-          {mergedProps.artist}
+          {props.artist || "未知艺术家"}
         </Typography>
         <Typography
           variant="caption"
           sx={{ display: "block" }}
         >
-          {mergedProps.album}
+          {props.album || "未知专辑"}
         </Typography>
       </Box>
     </>
   );
 };
 
-const Player: Component<{
-  songInfo?: { name?: string; artist?: string; album?: string };
-}> = (props) => {
+let audioElement!: HTMLAudioElement
+
+const Player: Component = () => {
   return (
     <>
       <Card class={styles.player}>
@@ -73,14 +61,15 @@ const Player: Component<{
           <Typography variant="overline">Now Playing</Typography>
           <Box class={styles.content}>
             <SongInfo
-              name={props.songInfo?.name}
-              artist={props.songInfo?.artist}
-              album={props.songInfo?.album}
+              name={nowPlay().media.name}
+              artist={nowPlay().media.artist}
+              album={nowPlay().media.album}
             />
-            <Cover src="https://p2.music.126.net/S4Kcgr9CmA_1yM6wbjL3Rg==/109951165354140879.jpg?param=2000y2000" />
+            <Cover src={nowPlay().media.albumCover} />
           </Box>
         </CardContent>
         <PlayControl/ >
+        <audio preload="auto" src={mediaSrc()} ref={audioElement} controls/>
       </Card>
       <Playlist />
     </>
@@ -88,3 +77,6 @@ const Player: Component<{
 };
 
 export default Player;
+export {
+  audioElement
+}

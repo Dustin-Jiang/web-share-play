@@ -64,16 +64,20 @@ const submitSearch = () => {
 
 const addToPlaylist = async (songDetail: Netease.SongDetail) => {
   try {
-    let [SongUrl] = await getSongsUrl([songDetail.id])
+    let [songUrl] = await getSongsUrl([songDetail.id])
+
+    let src = new URL(songUrl.url)
+    src.protocol = "https:"
 
     setPlay("media", media => [...media, {
       type: "music",
       data: {
-        src: SongUrl.url,
+        src: src.toString(),
         title: songDetail.name,
         artist: songDetail.ar[0].name,
         album: songDetail.al.name,
-        albumCover: songDetail.al.picUrl
+        albumCover: songDetail.al.picUrl,
+        length: songUrl.time
       }
     }])
   } catch(e) {

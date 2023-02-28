@@ -11,7 +11,7 @@ import UserNameDialog from "../../components/play/userNameDialog";
 import { onUserNameSet } from "../../viewmodel/play/userNameDialog"
 import { getSession, setSesion } from "../../model/session";
 import getTrackers from "../../utils/trackers";
-import { copyLink, Play as PlayViewModel, quitPlay } from "../../viewmodel/play";
+import { copyLink, nowPlay, Play as PlayViewModel, quitPlay } from "../../viewmodel/play";
 import { Toaster } from "solid-toast";
 
 const Play: Component = () => {
@@ -65,11 +65,7 @@ const Play: Component = () => {
           <UserList show={userNameSet()}/>
         </MainDrawer>
         <Background>
-          <Player
-            songInfo={{
-              name: "Choeur: Jésus demeure ma joie, Consolation et sève de mon coeur",
-            }}
-          />
+          <Player />
         </Background>
       </div>
     </>

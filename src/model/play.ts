@@ -17,7 +17,8 @@ interface Music {
   title: string
   artist?: string
   album?: string
-  albumCover?: URI
+  albumCover?: URI,
+  length: number
 }
 
 type MediaTypes = Music
@@ -38,5 +39,6 @@ export {
 }
 
 export type {
-  User
+  User,
+  Music
 }

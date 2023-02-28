@@ -13,9 +13,9 @@ import {
   CardContent
 } from "@suid/material";
 import { Component, For, Show } from "solid-js";
-import { play } from "../../../model";
+import { Music, play } from "../../../model";
 import { isPlaylistOpen } from "../../../viewmodel";
-import { toggleAddTrackPopup } from "../../../viewmodel/play/player/playlist";
+import { changeNowPlayItem, toggleAddTrackPopup } from "../../../viewmodel/play/player/playlist";
 import FlexBlank from "../../flexBlank/flexBlank";
 import AddTrackPopup from "./addTrackPopup";
 
@@ -34,14 +34,13 @@ const Playlist: Component = () => {
             </Box>
           </CardContent>
           <List>
-            <PlaylistItem
-              title="THANATOS"
-              artist="Loren & MASH"
-              album="EVANGELION FINALLY"
-              cover="https://p2.music.126.net/0w2F-X52Ag-bSmIQGOzDlg==/109951165354042987.jpg"
-              src=""
-            />
-            <For each={play.media}>
+            <For each={play.media} fallback={
+              <Box sx={{ padding: "16px", display: "flex", justifyContent: "center" }}>
+                <Typography variant="caption">
+                  播放列表为空
+                </Typography>
+              </Box>
+            }>
               {
                 (item) => {
                   return (
@@ -49,8 +48,9 @@ const Playlist: Component = () => {
                       title={item.data.title}
                       artist={item.data.artist}
                       album={item.data.album}
-                      cover={item.data.albumCover}
+                      albumCover={item.data.albumCover}
                       src={item.data.src}
+                      length={item.data.length}
                     / >
                   )
                 }
@@ -63,18 +63,12 @@ const Playlist: Component = () => {
   )
 }
 
-const PlaylistItem: Component<{
-  title: string,
-  src: string,
-  artist?: string,
-  album?: string,
-  cover?: string
-}> = (props) => {
+const PlaylistItem: Component<Music> = (props) => {
   return (
-    <ListItemButton onClick={() => {console.log(props.src)}}>
+    <ListItemButton onClick={() => {changeNowPlayItem(props)}}>
       <ListItemAvatar>
         <Show
-          when={props.cover}
+          when={props.albumCover}
           fallback={
             <>
               <Avatar>
@@ -83,7 +77,7 @@ const PlaylistItem: Component<{
             </>
           }
         >
-          <Avatar src={props.cover} sx={{ height: "60px", width: "60px", marginRight: "12px" }} />
+          <Avatar src={props.albumCover} sx={{ height: "60px", width: "60px", marginRight: "12px" }} />
         </Show>
       </ListItemAvatar>
       <ListItemText primary={props.title} secondary={
