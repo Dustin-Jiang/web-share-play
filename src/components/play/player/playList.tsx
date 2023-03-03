@@ -18,13 +18,14 @@ import { isPlaylistOpen } from "../../../viewmodel";
 import { changeNowPlayItem, toggleAddTrackPopup } from "../../../viewmodel/play/player/playlist";
 import FlexBlank from "../../flexBlank/flexBlank";
 import AddTrackPopup from "./addTrackPopup";
+import { NoWrapText } from "../../noWrapText"
 
 const Playlist: Component = () => {
   return (
     <>
       <AddTrackPopup />
       <Grow in={isPlaylistOpen()} style={{ transformOrigin: "top center" }}>
-        <Card sx={{ marginTop: "8px" }}>
+        <Card sx={{ marginTop: "8px", width: "600px" }}>
           <CardContent sx={{ paddingBottom: "0px" }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <Typography variant="overline">Playlist</Typography>
@@ -80,12 +81,17 @@ const PlaylistItem: Component<Music> = (props) => {
           <Avatar src={props.albumCover} sx={{ height: "60px", width: "60px", marginRight: "12px" }} />
         </Show>
       </ListItemAvatar>
-      <ListItemText primary={props.title} secondary={
-        <>
-          <Box>{props.artist || "未知艺术家"}</Box>
-          <Box>{props.album || "未知专辑"}</Box>
-        </>
-      } />
+      <ListItemText
+        primary={
+          <NoWrapText>{props.title}</NoWrapText>
+        }
+        secondary={
+          <>
+            <NoWrapText>{props.artist || "未知艺术家"}</NoWrapText>
+            <NoWrapText>{props.album || "未知专辑"}</NoWrapText>
+          </>
+        }
+      />
     </ListItemButton>
   )
 }

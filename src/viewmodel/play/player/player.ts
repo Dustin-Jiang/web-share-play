@@ -53,30 +53,32 @@ createEffect<boolean>((prev) => {
 
 // on the end of media
 createEffect(() => {
-  if (playingPercentage() === 100) {
-    let foundNowPlaying = false
-
-    // stop the media first
-    setPlaying(false)
-    for (let media of play.media) {
-      if (foundNowPlaying) {
-        // last song is previous Media<> object
-        // this is the next
-        setSong(media.data)
-  
-        setPlayingPercentage(0)
-
-        // everything is done, now start playing
-        // if there is no media next, the code won't reach here
-        // so play the audioElement wildly
-        setTimeout(() => setPlaying(true), 50)
-
-        break
-      }
-      if (nowPlay().media.src === media.data.src) foundNowPlaying = true
-    }
-  }
+  if (playingPercentage() === 100) setNextSong(true);
 })
+
+const setNextSong = (isPlaying?: boolean) => {
+  if (!isPlaying) isPlaying = nowPlay().isPlaying
+  let foundNowPlaying = false
+  // stop the media first
+  setPlaying(false)
+  for (let media of play.media) {
+    if (foundNowPlaying) {
+      // last song is previous Media<> object
+      // this is the next
+      setSong(media.data)
+
+      setPlayingPercentage(0)
+
+      // everything is done, now start playing
+      // if there is no media next, the code won't reach here
+      // so play the audioElement wildly
+      if (isPlaying) setTimeout(() => setPlaying(true), 50)
+
+      break
+    }
+    if (nowPlay().media.src === media.data.src) foundNowPlaying = true
+  }
+}
 
 /**
  * 
@@ -120,6 +122,7 @@ const setSong = (song: Music) => {
 
   navigator.mediaSession.setActionHandler("play", () => setPlaying(true))
   navigator.mediaSession.setActionHandler("pause", () => setPlaying(false))
+  navigator.mediaSession.setActionHandler("nexttrack", () => setNextSong(nowPlay().isPlaying))
 }
 
 const [isPlaylistOpen, setPlaylistOpen] = createSignal<boolean>(false)
@@ -146,5 +149,6 @@ export {
   isPlaylistOpen,
   playingPercentage,
   mediaSrc,
-  setSong
+  setSong,
+  setNextSong as nextSong
 };

@@ -2,7 +2,7 @@ import { useParams } from "@solidjs/router";
 import { Link } from "@suid/icons-material";
 import { Button, IconButton } from "@suid/material";
 import { Component, createSignal, onCleanup, onMount } from "solid-js";
-import Background from "../../components/background/background";
+import { BackgroundTop as Background } from "../../components/background/background";
 import MainAppBar from "../../components/mainAppBar/mainAppBar";
 import MainDrawer from "../../components/mainDrawer/mainDrawer";
 import Player from "../../components/play/player/player";
@@ -11,7 +11,7 @@ import UserNameDialog from "../../components/play/userNameDialog";
 import { onUserNameSet } from "../../viewmodel/play/userNameDialog"
 import { getSession, setSesion } from "../../model/session";
 import getTrackers from "../../utils/trackers";
-import { copyLink, nowPlay, Play as PlayViewModel, quitPlay } from "../../viewmodel/play";
+import { copyLink, Play as PlayViewModel, quitPlay } from "../../viewmodel/play";
 import { Toaster } from "solid-toast";
 
 const Play: Component = () => {
@@ -24,9 +24,10 @@ const Play: Component = () => {
       setSesion({...getSession(), sessionName})
     }
 
-    onUserNameSet().then(async () => {
-      play = new PlayViewModel(sessionName, await getTrackers());
+    let usernameObserve = onUserNameSet()
+    usernameObserve.then(async () => {
       setUserNameSet(true)
+      play = new PlayViewModel(sessionName, await getTrackers());
     })
 
     window.addEventListener("unload", () => {
@@ -64,7 +65,7 @@ const Play: Component = () => {
         <MainDrawer>
           <UserList show={userNameSet()}/>
         </MainDrawer>
-        <Background>
+        <Background paddingTop="32px">
           <Player />
         </Background>
       </div>

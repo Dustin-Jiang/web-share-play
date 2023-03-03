@@ -1,7 +1,7 @@
 import { Pause, PlayArrow, QueueMusic, SkipNext, SkipPrevious } from "@suid/icons-material";
 import { Box, IconButton, LinearProgress } from "@suid/material";
 import { Component, Show } from "solid-js";
-import { nowPlay, togglePlaying, togglePlaylistOpen, playingPercentage } from "../../../viewmodel/play";
+import { nowPlay, togglePlaying, togglePlaylistOpen, playingPercentage, nextSong } from "../../../viewmodel/play";
 import FlexBlank from "../../flexBlank/flexBlank";
 import styles from "./player.module.css";
 
@@ -29,7 +29,7 @@ const PlayControl: Component = () => {
               <Pause />
             </Show>
           </IconButton>
-          <IconButton class={styles.playControl}>
+          <IconButton class={styles.playControl} onClick={() => nextSong()}>
             <SkipNext />
           </IconButton>
 
