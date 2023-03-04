@@ -8,6 +8,20 @@
   width: calc(400px - 2 * 24px);
 }
 
+.panelMobile {
+  padding: 16px 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  width: calc(100vw - 2 * 24px - 2 * 8px);
+}
+
 .panel > * {
+  width: 100%;
+}
+
+.panelMobile > * {
   width: 100%;
 }
