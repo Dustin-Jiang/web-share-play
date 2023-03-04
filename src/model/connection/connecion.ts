@@ -9,7 +9,8 @@ export default class Connection {
   constructor(roomId: string, trackerUrls: string[]) {
     this.room = joinRoom({
       appId: "https://github.com/Dustin-Jiang/web-share-play",
-      trackerUrls
+      trackerUrls,
+      trackerRedundancy: 1
     }, roomId);
     this.leave = this.room.leave
     this.selfId = selfId

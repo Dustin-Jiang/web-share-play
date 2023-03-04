@@ -1,5 +1,5 @@
 import { createEffect, createSignal } from "solid-js";
-import { MediaAction, UserDataExchange } from "../../model/connection";
+import { MediaAction, PlaylistExchange, UserDataExchange } from "../../model/connection";
 import Connection from "../../model/connection/connecion";
 import { setPlay, User } from "../../model/play";
 import { getSession } from "../../model/session";
@@ -50,6 +50,7 @@ class Play {
       sendIntroduce,
       getIntroduce
     ] = this.connection.makeAction<User>("introduce")
+
     const [
       sendUserDataExchange,
       getUserDataExchange
@@ -58,6 +59,17 @@ class Play {
     const userDataExchange = new UserDataExchange.Exchange(
       sendUserDataExchange,
       getUserDataExchange,
+      this.connection.selfId
+    )
+
+    const [
+      sendPlaylistExchange,
+      getPlaylistExchange
+    ] = this.connection.makeAction<PlaylistExchange.DataPack>("playlstExchg")
+
+    const playlistExchange = new PlaylistExchange.Exchange(
+      sendPlaylistExchange,
+      getPlaylistExchange,
       this.connection.selfId
     )
 
@@ -82,7 +94,10 @@ class Play {
       return nowPlay()
     })
 
-    setInterval(() => userDataExchange.send(), 10000)
+    setInterval(() => {
+      userDataExchange.send(),
+      playlistExchange.send()
+    }, 10000)
 
     sendIntroduce(currentUser)
     getIntroduce((data, peerId) => {
