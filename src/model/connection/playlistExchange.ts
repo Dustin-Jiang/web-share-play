@@ -66,11 +66,6 @@ export namespace PlaylistExchange {
     }
 
     createDataPack(): DataPack {
-      console.log({
-        sender: play.user[this.selfId],
-        timeStamp: Date.now(),
-        playlist: play.media
-      })
       return {
         sender: play.user[this.selfId],
         timeStamp: Date.now(),

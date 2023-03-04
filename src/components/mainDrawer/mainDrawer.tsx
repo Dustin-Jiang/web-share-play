@@ -10,7 +10,6 @@ const MainDrawer: ParentComponent = (props) => {
     drawer() ? "block" : "none"
   );
   createEffect(() => {
-    console.log(drawer())
     if (drawer()) setDisplay("block")
     else {
       setDisplay("block")
