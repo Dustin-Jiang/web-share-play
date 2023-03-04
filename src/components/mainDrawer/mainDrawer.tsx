@@ -1,6 +1,7 @@
-import { Toolbar, Drawer } from "@suid/material";
-import { children, createEffect, createSignal, ParentComponent } from "solid-js";
-import { drawer } from "../../viewmodel/play";
+import { Toolbar, Drawer, Slide } from "@suid/material";
+import { children, createEffect, createSignal, ParentComponent, Show } from "solid-js";
+import { isMobile } from "../../utils/responsive";
+import { drawer, toggleDrawer } from "../../viewmodel/play";
 
 const MainDrawer: ParentComponent = (props) => {
   const ctx = children(() => props.children);
@@ -9,6 +10,7 @@ const MainDrawer: ParentComponent = (props) => {
     drawer() ? "block" : "none"
   );
   createEffect(() => {
+    console.log(drawer())
     if (drawer()) setDisplay("block")
     else {
       setDisplay("block")
@@ -19,24 +21,45 @@ const MainDrawer: ParentComponent = (props) => {
   })
 
   return (
-    <Drawer
-      variant="persistent"
-      open={drawer()}
-      sx={{
-        [`& .MuiDrawer-paper`]: {
-          width: "240px",
-          boxSizing: "border-box",
-          zIndex: "100",
-          position: "relative",
-          height: "100vh",
+    <Show when={!isMobile()} fallback={
+        <Drawer
+          variant="temporary"
+          open={drawer()}
+          onClose={toggleDrawer}
+          sx={{
+            [`& .MuiDrawer-paper`]: {
+              width: "240px",
+              boxSizing: "border-box",
+              zIndex: "1000",
+              height: "100vh",
+            },
+            flexShrink: 0,
+            zIndex: "1000"
+          }}
+        >
+          <Toolbar />
+          {ctx()}
+        </Drawer>
+    }>
+      <Drawer
+        variant="persistent"
+        open={drawer()}
+        sx={{
+          [`& .MuiDrawer-paper`]: {
+            width: "240px",
+            boxSizing: "border-box",
+            zIndex: "100",
+            position: "relative",
+            height: "100vh",
+          },
           display: display(),
-        },
-        flexShrink: 0,
-      }}
-    >
-      <Toolbar />
-      {ctx()}
-    </Drawer>
+          flexShrink: 0,
+        }}
+      >
+        <Toolbar />
+        {ctx()}
+      </Drawer>
+    </Show>
   );
 };
 
