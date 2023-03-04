@@ -57,7 +57,7 @@ createEffect(() => {
 })
 
 const setNextSong = (isPlaying?: boolean) => {
-  if (!isPlaying) isPlaying = nowPlay().isPlaying
+  if (isPlaying === undefined) isPlaying = nowPlay().isPlaying
   let foundNowPlaying = false
   // stop the media first
   setPlaying(false)
