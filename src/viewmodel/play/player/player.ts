@@ -57,23 +57,12 @@ createEffect(() => {
 })
 
 const setNextSong = (isPlaying?: boolean) => {
-  if (isPlaying === undefined) isPlaying = nowPlay().isPlaying
   let foundNowPlaying = false
-  // stop the media first
-  setPlaying(false)
   for (let media of play.media) {
     if (foundNowPlaying) {
       // last song is previous Media<> object
       // this is the next
-      setSong(media.data)
-
-      setPlayingPercentage(0)
-
-      // everything is done, now start playing
-      // if there is no media next, the code won't reach here
-      // so play the audioElement wildly
-      if (isPlaying) setTimeout(() => setPlaying(true), 50)
-
+      setSong(media.data, isPlaying)
       break
     }
     if (nowPlay().media.src === media.data.src) foundNowPlaying = true
@@ -99,7 +88,13 @@ const setPlaying = (playing: boolean) : boolean => {
   }
 }
 
-const setSong = (song: Music) => {
+const setSong = (song: Music, isPlaying?: boolean) => {
+  if (isPlaying === undefined) isPlaying = nowPlay().isPlaying
+
+  // stop the media first
+  setPlaying(false)
+  setPlayingPercentage(0)
+
   setNowPlay({
     ...nowPlay(),
     media: {
@@ -112,6 +107,12 @@ const setSong = (song: Music) => {
       length: song.length
     }
   })
+
+
+  // everything is done, now start playing
+  // if there is no media next, the code won't reach here
+  // so play the audioElement wildly
+  if (isPlaying) setTimeout(() => setPlaying(true), 50)
 
   navigator.mediaSession.metadata = new MediaMetadata({
     album: song.album || "未知专辑",
