@@ -1,4 +1,4 @@
-import { NowPlay, setPlaying } from "../../viewmodel/play"
+import { mediaSrc, nowPlay, NowPlay, setPlaying, setSong } from "../../viewmodel/play"
 import { MediaAction } from "../connection"
 import { play } from "../play"
 import _ from "lodash-es"
@@ -10,7 +10,7 @@ export interface MusicActions {
   data?: unknown
 }
 
-type MusicControls = "play" | "pause" | "next" | "previous" | "jump"
+type MusicControls = "play" | "pause" | "jump" | "switch"
 
 namespace MusicAction {
   export function handler(
@@ -20,12 +20,24 @@ namespace MusicAction {
   ) {
     let haveChange = false
 
+    console.log(event.action)
+
     switch (event.action.action) {
       case "play":
         haveChange = setPlaying(true)
         break
       case "pause":
         haveChange = setPlaying(false)
+        break
+      case "switch":
+        let src = event.action.data as string
+        for (let song of play.media) {
+          if (song.data.src === src && nowPlay().media.src !== src) {
+            haveChange = true
+            setSong(song.data)
+            break
+          }
+        }
         break
     }
 
@@ -45,20 +57,31 @@ namespace MusicAction {
 
   export function createAction(
     nowPlay: NowPlay, prev: NowPlay | undefined
-    ): MediaAction.MediaAction<MusicActions>[] {
-    let actions: MusicControls[] = []
+  ): MediaAction.MediaAction<MusicActions>[] {
     let mediaActions: MediaAction.MediaAction<MusicActions>[] = []
 
+    const addAction = (action: MusicControls, data?: unknown) => {
+      mediaActions.push({
+        media: "music",
+        action: {
+          type: "musicAction",
+          action,
+          data
+        }
+      })
+    }
     const compare = (diff: [string, any]) => {
       switch (diff[0]) {
         case "isPlaying":
           diff[1] as boolean
-          actions.push(diff[1] ? "play" : "pause")
+          diff[1] ? addAction("play") : addAction("pause")
           break
         case "percentage":
           break
         case "media":
-          //TODO: WIP
+          console.log(diff)
+          let media = diff[1] as NowPlay["media"]
+          addAction("switch", media.src)
           break
       }
     }
@@ -71,15 +94,6 @@ namespace MusicAction {
     } else {
       _.toPairs(nowPlay).forEach(compare)
     }
-    actions.forEach((action) => {
-      mediaActions.push({
-        media: "music",
-        action: {
-          type: "musicAction",
-          action
-        }
-      })
-    })
     return mediaActions
   }
 }
