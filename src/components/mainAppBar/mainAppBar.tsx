@@ -25,7 +25,7 @@ const MainAppBar: ParentComponent<{
           <Typography
             variant="h6"
             component="div"
-            sx={{ flexGrow: 1 }}
+            sx={{ flexGrow: 1, whiteSpace: "nowrap" }}
           >
             {title()}
           </Typography>

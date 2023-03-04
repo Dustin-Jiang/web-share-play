@@ -19,13 +19,14 @@ import { changeNowPlayItem, toggleAddTrackPopup } from "../../../viewmodel/play/
 import FlexBlank from "../../flexBlank/flexBlank";
 import AddTrackPopup from "./addTrackPopup";
 import { NoWrapText } from "../../noWrapText"
+import { isMobile } from "../../../utils/responsive";
 
 const Playlist: Component = () => {
   return (
     <>
       <AddTrackPopup />
       <Grow in={isPlaylistOpen()} style={{ transformOrigin: "top center" }}>
-        <Card sx={{ marginTop: "8px", width: "600px" }}>
+        <Card sx={{ marginTop: "8px", width: isMobile() ? "calc(100vw - 2 * 8px)" : "600px" }}>
           <CardContent sx={{ paddingBottom: "0px" }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <Typography variant="overline">Playlist</Typography>

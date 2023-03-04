@@ -13,6 +13,7 @@ import { getSession, setSesion } from "../../model/session";
 import getTrackers from "../../utils/trackers";
 import { copyLink, Play as PlayViewModel, quitPlay } from "../../viewmodel/play";
 import { Toaster } from "solid-toast";
+import { isMobile } from "../../utils/responsive";
 
 const Play: Component = () => {
   const sessionName = useParams().sessionName;
@@ -27,7 +28,14 @@ const Play: Component = () => {
     let usernameObserve = onUserNameSet()
     usernameObserve.then(async () => {
       setUserNameSet(true)
-      play = new PlayViewModel(sessionName, await getTrackers());
+      // play = new PlayViewModel(sessionName, await getTrackers());
+      play = new PlayViewModel(sessionName, [
+        'wss://tracker.openwebtorrent.com',
+        'wss://tracker.btorrent.xyz',
+        'wss://tracker.files.fm:7073/announce',
+        'wss://qot.abiir.top:443/announce',
+        'wss://spacetradersapi-chatbox.herokuapp.com:443/announce'
+      ]); // for debug only
     })
 
     window.addEventListener("unload", () => {
@@ -65,7 +73,7 @@ const Play: Component = () => {
         <MainDrawer>
           <UserList show={userNameSet()}/>
         </MainDrawer>
-        <Background paddingTop="32px">
+        <Background paddingTop={ isMobile() ? "16px" : "32px" }>
           <Player />
         </Background>
       </div>

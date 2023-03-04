@@ -4,6 +4,7 @@ import Connection from "../../model/connection/connecion";
 import { setPlay, User } from "../../model/play";
 import { getSession } from "../../model/session";
 import { getUserInfo } from "../../model/userInfo";
+import { isMobile } from "../../utils/responsive";
 import { displayCopyLinkToaster, displayCopyLinkFailToaster } from "./notification";
 import { NowPlay, nowPlay } from "./player";
 
@@ -22,7 +23,7 @@ const quitPlay = () => {
   window.location.href = "/"
 }
 
-const [drawer, setDrawer] = createSignal<boolean>(true);
+const [drawer, setDrawer] = createSignal<boolean>(!isMobile());
 
 const toggleDrawer = () => {
   setDrawer(!drawer());

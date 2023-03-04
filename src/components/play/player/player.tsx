@@ -1,6 +1,7 @@
 import { MusicNote, Pause, SkipNext, SkipPrevious } from "@suid/icons-material";
 import { Box, Card, CardContent, IconButton, Typography } from "@suid/material";
 import { Component, Show } from "solid-js";
+import { isMobile } from "../../../utils/responsive";
 import { mediaSrc, nowPlay } from "../../../viewmodel";
 import PlayControl from "./playControl";
 import styles from "./player.module.css";
@@ -56,7 +57,7 @@ let audioElement!: HTMLAudioElement
 const Player: Component = () => {
   return (
     <>
-      <Card class={styles.player}>
+      <Card class={isMobile() ? styles.playerMobile : styles.player}>
         <CardContent>
           <Typography variant="overline">Now Playing</Typography>
           <Box class={styles.content}>
@@ -69,7 +70,7 @@ const Player: Component = () => {
           </Box>
         </CardContent>
         <PlayControl/ >
-        <audio preload="auto" src={mediaSrc()} ref={audioElement} controls/>
+        <audio preload="auto" src={mediaSrc()} ref={audioElement}/>
       </Card>
       <Playlist />
     </>
