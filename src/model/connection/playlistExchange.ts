@@ -24,7 +24,7 @@ export namespace PlaylistExchange {
       this.receiver = receiver
       this.selfId = selfId
       
-      this.receiver((data, peerId) => { this.get.call(this, data, peerId) })
+      this.receiver(this.get.bind(this))
     }
 
     get(data: DataPack, peerId: string) {

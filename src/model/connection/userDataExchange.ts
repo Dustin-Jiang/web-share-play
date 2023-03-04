@@ -24,7 +24,7 @@ export namespace UserDataExchange {
       this.receiver = receiver
       this.selfId = selfId
 
-      this.receiver(this.get)
+      this.receiver(this.get.bind(this))
     }
 
     send() {
