@@ -1,15 +1,21 @@
-import { MusicNote, Pause, SkipNext, SkipPrevious } from "@suid/icons-material";
-import { Box, Card, CardContent, IconButton, Typography } from "@suid/material";
-import { Component, Show } from "solid-js";
-import { isMobile } from "../../../utils/responsive";
+import { MusicNote } from "@suid/icons-material";
+import { Box, Card, CardContent, Typography } from "@suid/material";
+import { Component, createEffect, createSignal, Show } from "solid-js";
+import { is600px, is400px } from "../../../utils/responsive";
 import { mediaSrc, nowPlay } from "../../../viewmodel";
 import PlayControl from "./playControl";
 import styles from "./player.module.css";
 import Playlist from "./playList";
 
 const Cover: Component<{ src?: string }> = (props) => {
+  const [style, setStyle] = createSignal<string>(styles.cover)
+  createEffect(() => {
+    if (is400px()) setStyle(styles.cover400px)
+    else if (is600px()) setStyle(styles.cover600px)
+    else setStyle(styles.cover)
+  })
   return (
-    <Box class={styles.cover}>
+    <Box class={style()}>
       <Show
         when={props.src}
         fallback={
@@ -57,10 +63,10 @@ let audioElement!: HTMLAudioElement
 const Player: Component = () => {
   return (
     <>
-      <Card class={isMobile() ? styles.playerMobile : styles.player}>
+      <Card class={is600px() ? styles.playerMobile : styles.player}>
         <CardContent>
           <Typography variant="overline">Now Playing</Typography>
-          <Box class={styles.content}>
+          <Box class={is600px() ? styles.contentMobile : styles.content}>
             <SongInfo
               name={nowPlay().media.name}
               artist={nowPlay().media.artist}

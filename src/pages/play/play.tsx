@@ -13,7 +13,7 @@ import { getSession, setSesion } from "../../model/session";
 import getTrackers from "../../utils/trackers";
 import { copyLink, Play as PlayViewModel, quitPlay } from "../../viewmodel/play";
 import { Toaster } from "solid-toast";
-import { isMobile } from "../../utils/responsive";
+import { is600px } from "../../utils/responsive";
 
 const Play: Component = () => {
   const sessionName = useParams().sessionName;
@@ -73,7 +73,7 @@ const Play: Component = () => {
         <MainDrawer>
           <UserList show={userNameSet()}/>
         </MainDrawer>
-        <Background paddingTop={ isMobile() ? "16px" : "32px" }>
+        <Background paddingTop={ is600px() ? "16px" : "32px" }>
           <Player />
         </Background>
       </div>

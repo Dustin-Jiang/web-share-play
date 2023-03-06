@@ -1,16 +1,11 @@
 import { useMediaQuery } from "@suid/material"
-import { createEffect, createSignal } from "solid-js"
 
-const [isMobile, setMobile] = createSignal<boolean>(false)
-
-createEffect<boolean>((prev) => {
-  let status = useMediaQuery("(max-width: 600px)")()
-  if (prev !== status) {
-    setMobile(status)
-  }
-  return status
-})
+const is400px = useMediaQuery("(max-width: 400px)")
+const is600px = useMediaQuery("(max-width: 600px)")
+const is900px = useMediaQuery("(max-width: 900px)")
 
 export {
-  isMobile
+  is400px,
+  is600px,
+  is900px
 }

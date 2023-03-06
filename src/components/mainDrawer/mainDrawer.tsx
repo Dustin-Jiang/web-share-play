@@ -1,6 +1,6 @@
 import { Toolbar, Drawer, Slide } from "@suid/material";
 import { children, createEffect, createSignal, ParentComponent, Show } from "solid-js";
-import { isMobile } from "../../utils/responsive";
+import { is900px } from "../../utils/responsive";
 import { drawer, toggleDrawer } from "../../viewmodel/play";
 
 const MainDrawer: ParentComponent = (props) => {
@@ -20,7 +20,7 @@ const MainDrawer: ParentComponent = (props) => {
   })
 
   return (
-    <Show when={!isMobile()} fallback={
+    <Show when={!is900px()} fallback={
         <Drawer
           variant="temporary"
           open={drawer()}

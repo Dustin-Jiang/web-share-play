@@ -1,5 +1,5 @@
 import { VirtualContainer } from "@minht11/solid-virtual-container"
-import { MusicNote } from "@suid/icons-material"
+import { Close, MusicNote } from "@suid/icons-material"
 import {
   Avatar,
   Box,
@@ -9,6 +9,7 @@ import {
   DialogContent,
   DialogTitle,
   Grow,
+  IconButton,
   ListItemAvatar,
   ListItemButton,
   ListItemText,
@@ -16,6 +17,7 @@ import {
 } from "@suid/material"
 import { Component, Show } from "solid-js"
 import { searchResult } from "../../../model/media/netease"
+import { is600px } from "../../../utils/responsive"
 import { addToPlaylist, inputLinkChange, isSearchError, isSearching, submitSearch } from "../../../viewmodel/play/player/netease"
 import { isAddTrackPopupOpen, toggleAddTrackPopup } from "../../../viewmodel/play/player/playlist"
 
@@ -23,11 +25,16 @@ const AddTrackPopup : Component = () => {
   let listRef!: HTMLDivElement
   return (
     <>
-      <Dialog open={isAddTrackPopupOpen()} onClose={toggleAddTrackPopup}>
+      <Dialog open={isAddTrackPopupOpen()} onClose={toggleAddTrackPopup} fullScreen={is600px()}>
         <DialogTitle sx={{
-            minWidth: "480px"
+            minWidth: is600px() ? "" : "480px",
+            display: "flex",
+            alignItems: "center"
           }}
         >
+          <IconButton onClick={toggleAddTrackPopup} sx={{ marginRight: "16px"}}>
+            <Close/ >
+          </IconButton>
           从网易云音乐添加音频
         </DialogTitle>
         <DialogContent sx={{ flexShrink: "0", display:"flex", alignItems: "flex-end" }}>

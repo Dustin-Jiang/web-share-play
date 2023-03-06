@@ -7,7 +7,7 @@ import Background from "../../components/background/background";
 import IconTitle from "../../components/home/iconTitle/iconTitle";
 
 import { buttonSubmit, loading, userNameChange, userNameError, userName } from "../../viewmodel/home/home"
-import { isMobile } from "../../utils/responsive";
+import { is600px } from "../../utils/responsive";
 
 const Home: Component = () => {
   return (
@@ -15,7 +15,7 @@ const Home: Component = () => {
       <MainAppBar>SharePlay</MainAppBar>
       <Background>
         <Paper class={
-          isMobile() ? styles.panelMobile : styles.panel
+          is600px() ? styles.panelMobile : styles.panel
         }>
           <IconTitle>
             <Typography variant="h5">开始 SharePlay</Typography>

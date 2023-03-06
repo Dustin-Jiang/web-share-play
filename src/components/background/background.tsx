@@ -1,6 +1,6 @@
 import { Box } from "@suid/material";
 import { children, ParentComponent } from "solid-js";
-import { isMobile } from "../../utils/responsive";
+import { is600px } from "../../utils/responsive";
 import styles from "./background.module.css"
 
 const Background : ParentComponent = (props) => {
@@ -29,7 +29,7 @@ const BackgroundTop: ParentComponent<{
       <div class={styles.backdrop}>
         <Box class={styles.containerTop}>
           <Box sx={{
-            marginTop: `calc(${isMobile() ? 56 : 64}px + ${props.paddingTop})`,
+            marginTop: `calc(${is600px() ? 56 : 64}px + ${props.paddingTop})`,
             marginBottom: `32px`
           }}>
             {ctx()}

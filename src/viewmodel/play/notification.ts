@@ -2,7 +2,7 @@ import { ErrorOutline, InfoOutlined } from "@suid/icons-material"
 import { Box } from "@suid/material"
 import { JSX } from "solid-js"
 import toast from "solid-toast"
-import { isMobile } from "../../utils/responsive"
+import { is600px } from "../../utils/responsive"
 
 const SNACKBAR_COLOR = {
   "SUCCESS": "rgb(46, 125, 50)",
@@ -65,7 +65,7 @@ function getMaterialSnackbarOptions(opt: {
       borderRadius: "4px",
       background: (opt.background || "#ffffff")
     },
-    position: isMobile() ? "bottom-center" : "top-right" as "bottom-center" | "top-right"
+    position: is600px() ? "bottom-center" : "top-right" as "bottom-center" | "top-right"
   }
 }
 
