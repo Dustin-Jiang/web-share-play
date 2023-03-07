@@ -7,6 +7,7 @@ export default defineConfig({
   server: {
     port: 3000,
   },
+  base: "/web-share-play",
   build: {
     target: 'es6',
   },
