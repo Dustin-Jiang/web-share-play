@@ -3,11 +3,11 @@ import { render } from 'solid-js/web';
 
 import './index.css';
 import App from './App';
-import { Router } from '@solidjs/router';
+import { hashIntegration, Router } from '@solidjs/router';
 
 render(() => 
 <>
-  <Router>
+  <Router source={hashIntegration()}>
     <App />
   </Router>
 </>, document.getElementById('root') as HTMLElement);

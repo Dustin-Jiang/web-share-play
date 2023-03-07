@@ -36,7 +36,7 @@ let buttonSubmit = (event: MouseEvent) => {
       name
     })
 
-    window.location.pathname = `${import.meta.env.BASE_URL}${sessionName}`
+    window.location.hash = `${sessionName}`
   }
 }
 

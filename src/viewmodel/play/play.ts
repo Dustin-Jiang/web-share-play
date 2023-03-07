@@ -20,7 +20,7 @@ const copyLink = () => {
 };
 
 const quitPlay = () => {
-  window.location.href = import.meta.env.BASE_URL
+  window.location.hash = "/"
 }
 
 const [drawer, setDrawer] = createSignal<boolean>(!is900px());

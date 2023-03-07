@@ -8,8 +8,8 @@ const App: Component = () => {
   let baseUrl = import.meta.env.BASE_URL
   return (
     <Routes>
-      <Route path={`${baseUrl}/`} component={Home} />
-      <Route path={`${baseUrl}/:sessionName`} component={Play} />
+      <Route path={`/`} component={Home} />
+      <Route path={`/:sessionName`} component={Play} />
     </Routes>
   );
 };
