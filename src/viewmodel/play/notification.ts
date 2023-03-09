@@ -1,4 +1,4 @@
-import { ErrorOutline, InfoOutlined } from "@suid/icons-material"
+import { DoneOutline, ErrorOutline, InfoOutlined } from "@suid/icons-material"
 import { Box } from "@suid/material"
 import { JSX } from "solid-js"
 import toast from "solid-toast"
@@ -39,6 +39,23 @@ const displayCopyLinkFailToaster = () => {
   }))
 }
 
+const displaySuccessMessage = (text: string) => {
+  toast.success(
+    getMaterialSnackbarText({
+      text,
+      textColor: "#ffffff"
+    }),
+    getMaterialSnackbarOptions({
+      icon: DoneOutline({
+        sx: {
+          color: "#ffffff"
+        }
+      }),
+      background: SNACKBAR_COLOR.SUCCESS
+    })
+  )
+}
+
 function getMaterialSnackbarText(opt: {
   text: string,
   textColor?: string,
@@ -71,5 +88,6 @@ function getMaterialSnackbarOptions(opt: {
 
 export {
   displayCopyLinkToaster,
-  displayCopyLinkFailToaster
+  displayCopyLinkFailToaster,
+  displaySuccessMessage
 }

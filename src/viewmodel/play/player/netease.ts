@@ -1,9 +1,10 @@
 import { ChangeEvent, ChangeEventHandler } from "@suid/types"
 import { chunk, concat, map } from "lodash-es"
 import { createSignal } from "solid-js"
-import { setPlay } from "../../../model"
+import { setPlay, Music } from "../../../model"
 import { getPlaylistInfo, getSongsDetail, getSongsUrl, setSearchResult } from "../../../model/media/netease"
 import { Netease } from "../../../model/media/netease.definition"
+import { displaySuccessMessage } from "../notification"
 
 const [value, setValue] = createSignal<string>("")
 const [isSearching, setSearching] = createSignal<boolean>(false)
@@ -85,10 +86,53 @@ const addToPlaylist = async (songDetail: Netease.SongDetail) => {
   }
 }
 
+const addAllToPlaylist = async (searchResult: Netease.SongDetail[]) => {
+  let songDetails: Map<number, Netease.SongDetail> = new Map()
+  let songIds: number[] = []
+  
+  searchResult.forEach((song) => {
+    songDetails.set(song.id, song)
+    songIds.push(song.id)
+  })
+  
+  let songUrls = await getSongsUrl(songIds)
+  let songs: {
+    type: "music",
+    data: Music
+  }[] = []
+
+  songUrls.forEach((song) => {
+    let src = new URL(song.url)
+    src.protocol = "https:"
+
+    let detail = songDetails.get(song.id) as Netease.SongDetail
+
+    songs.push({
+      type: "music",
+      data: {
+        src: src.toString(),
+        title: detail.name,
+        artist: detail.ar[0].name,
+        album: detail.al.name,
+        albumCover: detail.al.picUrl,
+        length: song.time
+      }
+    })
+  })
+
+  setPlay("media", media => [
+    ...media, 
+    ...songs
+  ])
+
+  displaySuccessMessage(`已添加 ${searchResult.length} 首歌曲至播放列表`)
+}
+
 export {
   inputLinkChange,
   submitSearch,
   isSearchError,
   isSearching,
-  addToPlaylist
+  addToPlaylist,
+  addAllToPlaylist
 }

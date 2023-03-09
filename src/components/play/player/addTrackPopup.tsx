@@ -6,6 +6,7 @@ import {
   Button,
   CircularProgress,
   Dialog,
+  DialogActions,
   DialogContent,
   DialogTitle,
   Grow,
@@ -18,7 +19,7 @@ import {
 import { Component, Show } from "solid-js"
 import { searchResult } from "../../../model/media/netease"
 import { is600px } from "../../../utils/responsive"
-import { addToPlaylist, inputLinkChange, isSearchError, isSearching, submitSearch } from "../../../viewmodel/play/player/netease"
+import { addAllToPlaylist, addToPlaylist, inputLinkChange, isSearchError, isSearching, submitSearch } from "../../../viewmodel/play/player/netease"
 import { isAddTrackPopupOpen, toggleAddTrackPopup } from "../../../viewmodel/play/player/playlist"
 
 const AddTrackPopup : Component = () => {
@@ -37,7 +38,7 @@ const AddTrackPopup : Component = () => {
           </IconButton>
           从网易云音乐添加音频
         </DialogTitle>
-        <DialogContent sx={{ flexShrink: "0", display:"flex", alignItems: "flex-end" }}>
+        <DialogContent sx={{ flexShrink: "0", display:"flex", alignItems: "flex-end", flexGrow: "0" }}>
           <TextField
             variant="standard"
             label="粘贴歌单链接"
@@ -61,7 +62,7 @@ const AddTrackPopup : Component = () => {
           </Button>
         </DialogContent>
         <Grow in={!isSearching()} style={{ transformOrigin: "top center" }}>
-          <div style={{ overflow: "auto" }} ref={listRef}>
+          <div style={{ overflow: "auto", "flex-grow": "1" }} ref={listRef}>
             <VirtualContainer
               items={searchResult}
               scrollTarget={listRef}
@@ -82,7 +83,12 @@ const AddTrackPopup : Component = () => {
             </VirtualContainer>
           </div>
         </Grow>
-        
+        <DialogActions>
+          <Button
+            disabled={isSearching() || searchResult.length === 0}
+            onClick={() => { addAllToPlaylist(searchResult) }}
+          >全部添加至播放列表</Button>
+        </DialogActions>
       </Dialog>
     </>
   )
