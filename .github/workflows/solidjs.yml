@@ -3,10 +3,9 @@
 name: Deploy SolidJS site to Pages
 
 on:
-  # Runs on pushes with tag 'release/*'
   push:
-    tags:
-      - 'release/*'
+    branches:
+    - master
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
