@@ -1,7 +1,7 @@
 import { useParams } from "@solidjs/router";
 import { Link } from "@suid/icons-material";
 import { Button, IconButton } from "@suid/material";
-import { Component, createSignal, onCleanup, onMount } from "solid-js";
+import { Component, createEffect, createSignal, onCleanup, onMount } from "solid-js";
 import { BackgroundTop as Background } from "../../components/background/background";
 import MainAppBar from "../../components/mainAppBar/mainAppBar";
 import MainDrawer from "../../components/mainDrawer/mainDrawer";
@@ -16,20 +16,28 @@ import { Toaster } from "solid-toast";
 import { is600px } from "../../utils/responsive";
 
 const Play: Component = () => {
-  const sessionName = useParams().sessionName;
   const [userNameSet, setUserNameSet] = createSignal<boolean>(false)
   let play: PlayViewModel
-  
+  let [sessionName, setSessionName] = createSignal<string>(useParams().sessionName)
+  window.onhashchange = () => {
+    setSessionName(window.location.hash.slice(1)); // No leading #
+    console.log(sessionName())
+    if (sessionName() !== getSession().sessionName) {
+      setSesion({...getSession(), sessionName: sessionName()})
+    }
+  }
+
   onMount(async () => {
-    if (sessionName !== getSession().sessionName) {
-      setSesion({...getSession(), sessionName})
+    setSessionName(window.location.hash.slice(1)); // No leading #
+    if (sessionName() !== getSession().sessionName) {
+      setSesion({...getSession(), sessionName: sessionName()})
     }
 
     let usernameObserve = onUserNameSet()
     usernameObserve.then(async () => {
       setUserNameSet(true)
       // play = new PlayViewModel(sessionName, await getTrackers());
-      play = new PlayViewModel(sessionName, [
+      play = new PlayViewModel(sessionName(), [
         'wss://tracker.openwebtorrent.com',
         'wss://tracker.btorrent.xyz',
         'wss://tracker.files.fm:7073/announce',
@@ -60,7 +68,7 @@ const Play: Component = () => {
           离开
         </Button>
       }>
-        {getSession().sessionName || sessionName}
+        {sessionName}
         <IconButton
           sx={{ marginLeft: "8px", color: "inherit" }}
           onClick={copyLink}

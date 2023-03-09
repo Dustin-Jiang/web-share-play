@@ -1,4 +1,4 @@
-import { createEffect, createSignal } from "solid-js";
+import { createComputed, createEffect, createSignal } from "solid-js";
 import { MediaAction, PlaylistExchange, UserDataExchange } from "../../model/connection";
 import Connection from "../../model/connection/connecion";
 import { setPlay, User } from "../../model/play";
@@ -38,14 +38,26 @@ class Play {
     this.connection = new Connection(roomId, trackerUrls);
     this.leave = this.connection.leave;
 
-    const currentUser = {
+    const [currentUser, setCurrentUser] = createSignal({
       name: getUserInfo().name,
       isOwner: getSession().create.includes(getSession().sessionName)
-    }
+    })
 
-    console.log(this.connection.getPeers())
-    console.log(this.connection.selfId)
-    setPlay("user", this.connection.selfId, currentUser)
+    // on chatroom id change
+    createComputed<string>((prev) => {
+      console.log(getSession().sessionName)
+      if (getSession().sessionName === prev) return prev
+      else {
+        setCurrentUser({
+          name: getUserInfo().name,
+          isOwner: getSession().create.includes(getSession().sessionName)
+        })
+        setPlay("user", this.connection.selfId, currentUser())
+        return getSession().sessionName
+      }
+    })
+    
+    setPlay("user", this.connection.selfId, currentUser())
 
     const [
       sendIntroduce,
@@ -100,14 +112,14 @@ class Play {
       playlistExchange.send()
     }, 10000)
 
-    sendIntroduce(currentUser)
+    sendIntroduce(currentUser())
     getIntroduce((data, peerId) => {
       setPlay("user", peerId, data)
     })
 
     this.connection.onPeerJoin((peerId) => {
       console.log(`${peerId} joined`)
-      sendIntroduce(currentUser, peerId)
+      sendIntroduce(currentUser(), peerId)
     });
 
     this.connection.onPeerLeave((peerId) => {
