@@ -1,4 +1,5 @@
-import { joinRoom, selfId } from "trystero";
+//@ts-ignore
+import { joinRoom, selfId } from "trystero/firebase";
 import type { Room } from "trystero";
 
 export default class Connection {
@@ -8,9 +9,7 @@ export default class Connection {
   // TODO: this implement is silly
   constructor(roomId: string, trackerUrls: string[]) {
     this.room = joinRoom({
-      appId: "https://github.com/Dustin-Jiang/web-share-play",
-      trackerUrls,
-      trackerRedundancy: 1
+      appId: "https://shareplay-dd323-default-rtdb.asia-southeast1.firebasedatabase.app",
     }, roomId);
     this.leave = this.room.leave
     this.selfId = selfId
